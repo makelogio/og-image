@@ -30,7 +30,14 @@ export function parseRequest(req: IncomingMessage) {
   const parsedRequest: ParsedRequest = {
     fileType: extension === "jpeg" ? extension : "png",
     text: decodeURIComponent(text),
-    fontSize: text.length > 40 ? "72px" : "96px",
+    fontSize:
+      text.length > 40
+        ? "72px"
+        : text.length > 30
+        ? "96px"
+        : text.length > 24
+        ? "120px"
+        : "142px",
     bg,
     color,
     logoURL,

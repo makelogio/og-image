@@ -53,6 +53,9 @@ function getCss(bg: string, color: string, fontSize = "96px") {
       width: 100%;
       display: flex;
       flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
     }
 
     code {
@@ -67,7 +70,9 @@ function getCss(bg: string, color: string, fontSize = "96px") {
     }
 
     .logo-wrapper {
-      margin: 75px 50px;
+      position: absolute;
+      left: 50px;
+      top: 75px;
     }
 
     .logo {
@@ -100,7 +105,6 @@ function getCss(bg: string, color: string, fontSize = "96px") {
         justify-content: center;
         word-break: break-all;
         padding: 0px 16px;
-        margin-top: auto;
     }
 
 
@@ -133,7 +137,6 @@ export function getHtml(parsedReq: ParsedRequest) {
             <div class="heading">${sanitizeHtml(text)}
             </div>
             </div>
-            <div class="spacer"></div>
 
         </div>
     </body>
