@@ -66,6 +66,11 @@ function getCss(bg: string, color: string, fontSize = "96px") {
     .logo-wrapper {
       margin: 75px 50px;
     }
+    .logo {
+      object-fit: contain;
+      height: 85px;
+      width: auto;
+    }
 
 
     .plus {
