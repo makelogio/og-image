@@ -103,7 +103,7 @@ function getCss(bg: string, color: string, fontSize = "96px") {
       text-align: center;
         align-items: center;
         justify-content: center;
-        word-break: break-all;
+        word-break: break-word;
         padding: 0px 16px;
     }
 
