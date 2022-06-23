@@ -1,6 +1,9 @@
 import { readFileSync } from "fs";
 import { sanitizeHtml } from "./sanitizer";
 import { ParsedRequest } from "./types";
+const twemoji = require("twemoji");
+const twOptions = { folder: "svg", ext: ".svg" };
+const emojify = (text: string) => twemoji.parse(text, twOptions);
 
 const rglr = readFileSync(
   `${__dirname}/../_fonts/Inter-Regular.woff2`
@@ -160,7 +163,7 @@ export function getHtml(parsedReq: ParsedRequest) {
                 ${getImage(logoURL)}
             </div>
             <div class="heading-wrapper">
-            <div class="heading">${sanitizeHtml(text)}
+            <div class="heading">${emojify(sanitizeHtml(text))}
             </div>
             </div>
 
