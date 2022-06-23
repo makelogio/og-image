@@ -29,24 +29,23 @@ export function parseRequest(req: IncomingMessage) {
   }
 
   let fontSize = "";
-  let pb = "";
   if (text.length > 40) {
     fontSize = "82px";
-    pb = "204px";
   } else if (text.length > 26) {
     fontSize = "96px";
-    pb = "204px";
   } else if (text.length > 12) {
     fontSize = "120px";
-    pb = "232px";
   } else {
-    pb = "250px";
     fontSize = "142px";
   }
 
-  let textWidth = "50%";
-  if (text.length > 70) {
+  let textWidth = "75%";
+  if (text.length > 45) {
     textWidth = "75%";
+  }
+  let pb = "275px";
+  if (text.length > 70) {
+    pb = "200px";
   }
 
   const parsedRequest: ParsedRequest = {
