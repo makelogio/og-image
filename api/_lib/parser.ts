@@ -32,15 +32,15 @@ export function parseRequest(req: IncomingMessage) {
   let pb = "";
   if (text.length > 40) {
     fontSize = "82px";
-    pb = "164px";
+    pb = "204px";
   } else if (text.length > 26) {
     fontSize = "96px";
-    pb = "164px";
+    pb = "204px";
   } else if (text.length > 12) {
     fontSize = "120px";
-    pb = "192px";
+    pb = "232px";
   } else {
-    pb = "216px";
+    pb = "250px";
     fontSize = "142px";
   }
   const parsedRequest: ParsedRequest = {
