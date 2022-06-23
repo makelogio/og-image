@@ -6,6 +6,12 @@ const rglr = readFileSync(
   `${__dirname}/../_fonts/Inter-Regular.woff2`
 ).toString("base64");
 
+const medium = readFileSync(
+  `${__dirname}/../_fonts/Inter-Medium.woff2`
+).toString("base64");
+const semibold = readFileSync(
+  `${__dirname}/../_fonts/Inter-SemiBold.woff2`
+).toString("base64");
 const bold = readFileSync(`${__dirname}/../_fonts/Inter-Bold.woff2`).toString(
   "base64"
 );
@@ -13,7 +19,7 @@ const mono = readFileSync(`${__dirname}/../_fonts/Vera-Mono.woff2`).toString(
   "base64"
 );
 
-function getCss(bg: string, color: string, fontSize = "96px") {
+function getCss(bg: string, color: string, fontSize = "96px", pb: string) {
   let background = bg;
   let foreground = color;
 
@@ -25,6 +31,20 @@ function getCss(bg: string, color: string, fontSize = "96px") {
         src: url(data:font/woff2;charset=utf-8;base64,${rglr}) format('woff2');
     }
 
+    @font-face {
+      font-family: 'Inter';
+      font-style:  normal;
+      font-weight: 500;
+      src: url(data:font/woff2;charset=utf-8;base64,${medium}) format('woff2');
+  }
+
+    @font-face {
+      font-family: 'Inter';
+      font-style:  normal;
+      font-weight: 600;
+      src: url(data:font/woff2;charset=utf-8;base64,${semibold}) format('woff2');
+  }
+    
     @font-face {
         font-family: 'Inter';
         font-style:  normal;
@@ -53,8 +73,7 @@ function getCss(bg: string, color: string, fontSize = "96px") {
       width: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
+      justify-content: flex-end;
       position: relative;
     }
 
@@ -71,14 +90,17 @@ function getCss(bg: string, color: string, fontSize = "96px") {
 
     .logo-wrapper {
       position: absolute;
-      left: 50px;
-      top: 75px;
+      left: 96px;
+      top: 148px;
+      object-fit: contain;
+      object-position: left top;
+      height: 95px;
+      max-width: 30%;
     }
 
     .logo {
-      object-fit: contain;
-      height: 85px;
-      width: auto;
+      width: 100%;
+      height: 100%;
     }
 
 
@@ -99,12 +121,13 @@ function getCss(bg: string, color: string, fontSize = "96px") {
         vertical-align: -0.1em;
     }
     .heading-wrapper {
-      max-width: 100%;
-      text-align: center;
+      max-width: 50%;
+      text-align: start;
         align-items: center;
         justify-content: center;
         word-break: break-word;
-        padding: 0px 16px;
+        padding-left: 104px; 
+        padding-bottom: ${pb};
     }
 
 
@@ -119,14 +142,14 @@ function getCss(bg: string, color: string, fontSize = "96px") {
 }
 
 export function getHtml(parsedReq: ParsedRequest) {
-  const { text, bg, logoURL, color, fontSize } = parsedReq;
+  const { text, bg, logoURL, color, fontSize, pb } = parsedReq;
   return `<!DOCTYPE html>
 <html>
     <meta charset="utf-8">
     <title>Generated Image</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        ${getCss(bg, color, fontSize)}
+        ${getCss(bg, color, fontSize, pb)}
     </style>
     <body>
         <div class="content-wrapper">
