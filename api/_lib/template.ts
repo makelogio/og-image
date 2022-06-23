@@ -19,7 +19,13 @@ const mono = readFileSync(`${__dirname}/../_fonts/Vera-Mono.woff2`).toString(
   "base64"
 );
 
-function getCss(bg: string, color: string, fontSize = "96px", pb: string) {
+function getCss(
+  bg: string,
+  color: string,
+  fontSize = "96px",
+  pb: string,
+  textWidth = "50%"
+) {
   let background = bg;
   let foreground = color;
 
@@ -118,7 +124,7 @@ function getCss(bg: string, color: string, fontSize = "96px", pb: string) {
         vertical-align: -0.1em;
     }
     .heading-wrapper {
-      max-width: 50%;
+      max-width: ${textWidth};
       text-align: start;
         align-items: center;
         justify-content: center;
@@ -139,14 +145,14 @@ function getCss(bg: string, color: string, fontSize = "96px", pb: string) {
 }
 
 export function getHtml(parsedReq: ParsedRequest) {
-  const { text, bg, logoURL, color, fontSize, pb } = parsedReq;
+  const { text, bg, logoURL, color, fontSize, pb, textWidth } = parsedReq;
   return `<!DOCTYPE html>
 <html>
     <meta charset="utf-8">
     <title>Generated Image</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        ${getCss(bg, color, fontSize, pb)}
+        ${getCss(bg, color, fontSize, pb, textWidth)}
     </style>
     <body>
         <div class="content-wrapper">

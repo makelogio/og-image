@@ -43,10 +43,17 @@ export function parseRequest(req: IncomingMessage) {
     pb = "250px";
     fontSize = "142px";
   }
+
+  let textWidth = "50%";
+  if (text.length > 70) {
+    textWidth = "75%";
+  }
+
   const parsedRequest: ParsedRequest = {
     fileType: extension === "jpeg" ? extension : "png",
     text: decodeURIComponent(text),
     fontSize,
+    textWidth,
     pb,
     bg,
     color,
