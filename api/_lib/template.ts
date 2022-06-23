@@ -92,15 +92,12 @@ function getCss(bg: string, color: string, fontSize = "96px", pb: string) {
       position: absolute;
       left: 96px;
       top: 148px;
-      object-fit: contain;
-      object-position: left top;
-      height: 95px;
       max-width: 30%;
     }
 
     .logo {
-      width: 100%;
-      height: 100%;
+      height: auto; 
+    width: 450px; 
     }
 
 
