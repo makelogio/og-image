@@ -28,27 +28,27 @@ const mono = readFileSync(`${__dirname}/../_fonts/Vera-Mono.woff2`).toString(
   "base64"
 );
 
-function getCss({
-  textInfo,
-  brandingInfo,
-}: {
+interface CssOptions {
   textInfo?: TextInfo;
   brandingInfo?: BrandingInfo;
   gradient?: string;
-}) {
+}
+
+function getCss({ textInfo, brandingInfo, gradient }: CssOptions) {
   let background = brandingInfo?.bg ?? "";
   let foreground = brandingInfo?.color ?? "";
 
   let textInfoCSS = "";
   if (textInfo) {
-    textInfoCSS = `.heading-wrapper {
+    textInfoCSS = `
+      .heading-wrapper {
         max-width: 75%;
         text-align: start;
-          align-items: center;
-          justify-content: center;
-          word-break: break-word;
-          padding-left: 104px; 
-          padding-bottom: ${textInfo.pb};
+        align-items: center;
+        justify-content: center;
+        word-break: break-word;
+        padding-left: 104px; 
+        padding-bottom: ${textInfo.pb};
       }
 
     .heading {
@@ -98,12 +98,11 @@ function getCss({
       }
 
     body {
-        background: ${background};
-        background-size: 100px 100px;
-        height: 100vh;
-        display: flex;
+      background: ${background};
+      background-image: ${gradient};
+      height: 100vh;
+      display: flex;
       width: 100%;
-
     }
 
     .content-wrapper {
@@ -135,7 +134,7 @@ function getCss({
 
     .logo {
       height: auto; 
-    width: 450px; 
+      width: 450px; 
     }
 
 
@@ -186,20 +185,22 @@ export function getHtml(parsedReq: ParsedRequest) {
         <body>
             <div class="content-wrapper">
             ${
-              textImageReq?.brandingInfo.logoURL &&
-              `<div class="logo-wrapper">
+              textImageReq?.brandingInfo.logoURL
+                ? `<div class="logo-wrapper">
                 ${getImage(textImageReq.brandingInfo.logoURL)}
               </div>`
+                : ""
             }
             
             ${
-              textImageReq?.textInfo &&
-              `
+              textImageReq?.textInfo
+                ? `
               <div class="heading-wrapper">
                 <div class="heading">
                   ${emojify(sanitizeHtml(textImageReq.textInfo.text))}
                 </div>
               </div>`
+                : ""
             }
                 
 
