@@ -1,18 +1,13 @@
 import { IncomingMessage } from "http";
 import { parse } from "url";
-import { ParsedRequest } from "./types";
+import { FeaturedImageRequest, TextImageRequest } from "./types";
 
-export function parseRequest(req: IncomingMessage) {
-  console.log("HTTP " + req.url);
-  const { pathname, query } = parse(req.url || "/", true);
-  const { branding } = query || {};
-
-  if (!branding) {
-    throw new Error("Expected org branding info");
-  }
-
+const textImageRequestParser = (
+  pathname: string,
+  encodedQuery: string
+): TextImageRequest => {
   const { logoURL, bg, color } = JSON.parse(
-    Buffer.from(branding as string, "base64").toString("binary")
+    Buffer.from(encodedQuery, "base64").toString("binary")
   );
 
   const arr = (pathname || "/").slice(1).split(".");
@@ -44,16 +39,56 @@ export function parseRequest(req: IncomingMessage) {
     pb = "200px";
   }
 
-  const parsedRequest: ParsedRequest = {
+  const parsedRequest: TextImageRequest = {
     fileType: extension === "jpeg" ? extension : "png",
-    text: decodeURIComponent(text),
-    fontSize,
-    textWidth: "75%",
-    pb,
-    bg,
-    color,
-    logoURL,
+    textInfo: {
+      text: decodeURIComponent(text),
+      fontSize,
+      pb,
+    },
+    brandingInfo: {
+      bg,
+      color,
+      logoURL,
+    },
   };
 
   return parsedRequest;
+};
+
+const featuredImageRequestParser = (
+  encodedQuery: string
+): FeaturedImageRequest => {
+  const { imageURL, bg } = JSON.parse(
+    Buffer.from(encodedQuery, "base64").toString("binary")
+  );
+
+  const parsedRequest: FeaturedImageRequest = {
+    fileType: "png",
+    imageURL,
+    bg,
+  };
+
+  return parsedRequest;
+};
+
+export function parseRequest(req: IncomingMessage) {
+  console.log("HTTP " + req.url);
+  const { pathname, query } = parse(req.url || "/", true);
+  if (!query) {
+    throw new Error("Expected query params");
+  }
+
+  const { branding, featuredImage } = query as {
+    branding?: string;
+    featuredImage?: string;
+  };
+
+  if (featuredImage) {
+    return featuredImageRequestParser(featuredImage);
+  } else if (branding) {
+    return textImageRequestParser(pathname ?? "", branding);
+  }
+
+  return null;
 }
