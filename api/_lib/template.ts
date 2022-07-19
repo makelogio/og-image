@@ -7,7 +7,8 @@ import {
   TextImageRequest,
   TextInfo,
 } from "./types";
-const twemoji = require("twemoji");
+import twemoji from "twemoji";
+
 const twOptions = { folder: "svg", ext: ".svg" };
 const emojify = (text: string) => twemoji.parse(text, twOptions);
 
@@ -35,8 +36,8 @@ interface CssOptions {
 }
 
 function getCss({ textInfo, brandingInfo, gradient }: CssOptions) {
-  let background = brandingInfo?.bg ?? "";
-  let foreground = brandingInfo?.color ?? "";
+  const background = brandingInfo?.bg ?? "";
+  const foreground = brandingInfo?.color ?? "";
 
   let textInfoCSS = "";
   if (textInfo) {
