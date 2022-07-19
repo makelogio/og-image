@@ -103,6 +103,7 @@ function getCss({ textInfo, brandingInfo, gradient }: CssOptions) {
       height: 100vh;
       display: flex;
       width: 100%;
+      margin: 0px;
     }
 
     .content-wrapper {
@@ -156,6 +157,19 @@ function getCss({ textInfo, brandingInfo, gradient }: CssOptions) {
     }
 
     ${textInfoCSS}
+
+    .featured-image-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 32px;
+    }
+
+    .featured-image {
+      object-fit: contain;
+      width: 100%;
+      height: auto;
+    }
     `;
 }
 
@@ -167,6 +181,36 @@ export function getHtml(parsedReq: ParsedRequest) {
     textImageReq = parsedReq as TextImageRequest;
   } else {
     featuredImageReq = parsedReq as FeaturedImageRequest;
+  }
+
+  let textImageReqHTML = "";
+
+  if (textImageReq) {
+    textImageReqHTML = `
+      <div class="content-wrapper">
+
+          <div class="logo-wrapper">
+            ${getImage(textImageReq.brandingInfo.logoURL)}
+          </div>
+
+          <div class="heading-wrapper">
+            <div class="heading">
+            ${emojify(sanitizeHtml(textImageReq.textInfo.text))}
+            </div>
+          </div>
+      </div>
+
+  `;
+  }
+
+  let featuredImageReqHTML = "";
+
+  if (featuredImageReq) {
+    featuredImageReqHTML = `
+      <div class="featured-image-wrapper">
+        <img src=${featuredImageReq.imageURL} class="featured-image"/>
+      </div>
+  `;
   }
 
   return `
@@ -183,28 +227,10 @@ export function getHtml(parsedReq: ParsedRequest) {
             })}
         </style>
         <body>
-            <div class="content-wrapper">
-            ${
-              textImageReq?.brandingInfo.logoURL
-                ? `<div class="logo-wrapper">
-                ${getImage(textImageReq.brandingInfo.logoURL)}
-              </div>`
-                : ""
-            }
-            
-            ${
-              textImageReq?.textInfo
-                ? `
-              <div class="heading-wrapper">
-                <div class="heading">
-                  ${emojify(sanitizeHtml(textImageReq.textInfo.text))}
-                </div>
-              </div>`
-                : ""
-            }
-                
+           
+            ${textImageReqHTML}
 
-            </div>
+            ${featuredImageReqHTML}
         </body>
     </html>`;
 }
