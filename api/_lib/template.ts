@@ -1,7 +1,16 @@
 import { readFileSync } from "fs";
 import { sanitizeHtml } from "./sanitizer";
-import { ParsedRequest } from "./types";
-const twemoji = require("twemoji");
+import {
+  BrandingInfo,
+  FeaturedImageRequest,
+  ParsedRequest,
+  TextImageRequest,
+  TextInfo,
+} from "./types";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-ignore
+import twemoji from "twemoji";
+
 const twOptions = { folder: "svg", ext: ".svg" };
 const emojify = (text: string) => twemoji.parse(text, twOptions);
 
@@ -22,15 +31,38 @@ const mono = readFileSync(`${__dirname}/../_fonts/Vera-Mono.woff2`).toString(
   "base64"
 );
 
-function getCss(
-  bg: string,
-  color: string,
-  fontSize = "96px",
-  pb: string,
-  textWidth = "50%"
-) {
-  let background = bg;
-  let foreground = color;
+interface CssOptions {
+  textInfo?: TextInfo;
+  brandingInfo?: BrandingInfo;
+  gradient?: string;
+}
+
+function getCss({ textInfo, brandingInfo, gradient }: CssOptions) {
+  const background = brandingInfo?.bg ?? "";
+  const foreground = brandingInfo?.color ?? "";
+
+  let textInfoCSS = "";
+  if (textInfo) {
+    textInfoCSS = `
+      .heading-wrapper {
+        max-width: 75%;
+        text-align: start;
+        align-items: center;
+        justify-content: center;
+        word-break: break-word;
+        padding-left: 104px; 
+        padding-bottom: ${textInfo.pb};
+      }
+
+    .heading {
+        font-family: 'Inter', sans-serif;
+        font-size: ${sanitizeHtml(textInfo.fontSize)};
+        font-style: normal;
+        font-weight: 500;
+        color: ${foreground};
+        line-height: 1.8;
+    }`;
+  }
 
   return `
     @font-face {
@@ -68,13 +100,19 @@ function getCss(
         src: url(data:font/woff2;charset=utf-8;base64,${mono})  format("woff2");
       }
 
-    body {
-        background: ${background};
-        background-size: 100px 100px;
-        height: 100vh;
-        display: flex;
-      width: 100%;
+      * {
+      border-width: 0;
+      border-style: solid;
+      box-sizing: border-box;
+      }
 
+    body {
+      background: ${background};
+      background-image: ${gradient};
+      height: 100vh;
+      display: flex;
+      width: 100%;
+      margin: 0px;
     }
 
     .content-wrapper {
@@ -106,7 +144,7 @@ function getCss(
 
     .logo {
       height: auto; 
-    width: 450px; 
+      width: 450px; 
     }
 
 
@@ -126,50 +164,85 @@ function getCss(
         margin: 0 .05em 0 .1em;
         vertical-align: -0.1em;
     }
-    .heading-wrapper {
-      max-width: ${textWidth};
-      text-align: start;
-        align-items: center;
-        justify-content: center;
-        word-break: break-word;
-        padding-left: 104px; 
-        padding-bottom: ${pb};
+
+    ${textInfoCSS}
+
+    .featured-image-wrapper {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 48px 96px;
     }
 
-
-    .heading {
-        font-family: 'Inter', sans-serif;
-        font-size: ${sanitizeHtml(fontSize)};
-        font-style: normal;
-        font-weight: 500;
-        color: ${foreground};
-        line-height: 1.8;
-    }`;
+    .featured-image {
+      object-fit: contain;
+      width: 100%;
+      height: auto;
+    }
+    `;
 }
 
 export function getHtml(parsedReq: ParsedRequest) {
-  const { text, bg, logoURL, color, fontSize, pb, textWidth } = parsedReq;
-  return `<!DOCTYPE html>
-<html>
-    <meta charset="utf-8">
-    <title>Generated Image</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        ${getCss(bg, color, fontSize, pb, textWidth)}
-    </style>
-    <body>
-        <div class="content-wrapper">
-            <div class="logo-wrapper">
-                ${getImage(logoURL)}
-            </div>
-            <div class="heading-wrapper">
-            <div class="heading">${emojify(sanitizeHtml(text))}
-            </div>
-            </div>
+  let textImageReq: TextImageRequest | undefined;
+  let featuredImageReq: FeaturedImageRequest | undefined;
 
-        </div>
-    </body>
-</html>`;
+  if ("textInfo" in parsedReq) {
+    textImageReq = parsedReq as TextImageRequest;
+  } else {
+    featuredImageReq = parsedReq as FeaturedImageRequest;
+  }
+
+  let textImageReqHTML = "";
+
+  if (textImageReq) {
+    textImageReqHTML = `
+      <div class="content-wrapper">
+
+          <div class="logo-wrapper">
+            ${getImage(textImageReq.brandingInfo.logoURL)}
+          </div>
+
+          <div class="heading-wrapper">
+            <div class="heading">
+            ${emojify(sanitizeHtml(textImageReq.textInfo.text))}
+            </div>
+          </div>
+      </div>
+
+  `;
+  }
+
+  let featuredImageReqHTML = "";
+
+  if (featuredImageReq) {
+    featuredImageReqHTML = `
+      <div class="featured-image-wrapper">
+      
+      <img src=${featuredImageReq.imageURL} class="featured-image"/>
+      </div>
+  `;
+  }
+
+  return `
+  <!DOCTYPE html>
+      <html>
+        <meta charset="utf-8">
+        <title>Generated Image</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            ${getCss({
+              textInfo: textImageReq?.textInfo,
+              brandingInfo: textImageReq?.brandingInfo,
+              gradient: featuredImageReq?.bg,
+            })}
+        </style>
+        <body>
+           
+            ${textImageReqHTML}
+
+            ${featuredImageReqHTML}
+        </body>
+    </html>`;
 }
 
 function getImage(src: string, width = "auto", height = "90px") {
