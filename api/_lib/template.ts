@@ -97,6 +97,12 @@ function getCss({ textInfo, brandingInfo, gradient }: CssOptions) {
         src: url(data:font/woff2;charset=utf-8;base64,${mono})  format("woff2");
       }
 
+      * {
+      border-width: 0;
+      border-style: solid;
+      box-sizing: border-box;
+      }
+
     body {
       background: ${background};
       background-image: ${gradient};
@@ -162,7 +168,7 @@ function getCss({ textInfo, brandingInfo, gradient }: CssOptions) {
       width: 100%;
       display: flex;
       justify-content: center;
-      padding: 32px;
+      padding: 48px 96px;
     }
 
     .featured-image {
@@ -208,7 +214,8 @@ export function getHtml(parsedReq: ParsedRequest) {
   if (featuredImageReq) {
     featuredImageReqHTML = `
       <div class="featured-image-wrapper">
-        <img src=${featuredImageReq.imageURL} class="featured-image"/>
+      
+      <img src=${featuredImageReq.imageURL} class="featured-image"/>
       </div>
   `;
   }
