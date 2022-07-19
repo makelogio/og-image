@@ -7,6 +7,8 @@ import {
   TextImageRequest,
   TextInfo,
 } from "./types";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-ignore
 import twemoji from "twemoji";
 
 const twOptions = { folder: "svg", ext: ".svg" };
