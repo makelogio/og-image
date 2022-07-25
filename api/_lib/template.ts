@@ -35,9 +35,17 @@ interface CssOptions {
   textInfo?: TextInfo;
   brandingInfo?: BrandingInfo;
   gradient?: string;
+  scale?: string;
+  borderRadius?: string;
 }
 
-function getCss({ textInfo, brandingInfo, gradient }: CssOptions) {
+function getCss({
+  textInfo,
+  brandingInfo,
+  gradient,
+  borderRadius,
+  scale,
+}: CssOptions) {
   const background = brandingInfo?.bg ?? "";
   const foreground = brandingInfo?.color ?? "";
 
@@ -174,10 +182,22 @@ function getCss({ textInfo, brandingInfo, gradient }: CssOptions) {
       padding: 48px 96px;
     }
 
-    .featured-image {
-      object-fit: contain;
+    .featured-image-scale {
       width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      transform: scale(${scale});
+
+    }
+
+    .featured-image {
+      width: auto;
       height: auto;
+      min-width: auto;
+      min-height: auto;
+      margin: auto;
+      border-radius: ${borderRadius};
     }
     `;
 }
@@ -217,8 +237,10 @@ export function getHtml(parsedReq: ParsedRequest) {
   if (featuredImageReq) {
     featuredImageReqHTML = `
       <div class="featured-image-wrapper">
-      
-      <img src=${featuredImageReq.imageURL} class="featured-image"/>
+        <div class="featured-image-scale">
+
+          <img src=${featuredImageReq.imageURL} class="featured-image"/>
+        </div>
       </div>
   `;
   }
@@ -234,6 +256,8 @@ export function getHtml(parsedReq: ParsedRequest) {
               textInfo: textImageReq?.textInfo,
               brandingInfo: textImageReq?.brandingInfo,
               gradient: featuredImageReq?.bg,
+              scale: featuredImageReq?.scale,
+              borderRadius: featuredImageReq?.borderRadius,
             })}
         </style>
         <body>
