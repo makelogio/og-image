@@ -22,6 +22,8 @@ export type FeaturedImageRequest = {
   fileType: FileType;
   imageURL: string;
   bg?: string;
+  scale?: string;
+  borderRadius?: string;
 };
 
 export type ParsedRequest = TextImageRequest | FeaturedImageRequest;

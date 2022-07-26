@@ -59,14 +59,27 @@ const textImageRequestParser = (
 const featuredImageRequestParser = (
   encodedQuery: string
 ): FeaturedImageRequest => {
-  const { imageURL, bg } = JSON.parse(
+  const { imageURL, bg, scale, borderRadius } = JSON.parse(
     Buffer.from(encodedQuery, "base64").toString("binary")
   );
+
+  // Because we are taking a larger screenshot,
+  // Need to increase scale that we receive to better match user's values
+  // e.g. if user requests scale=0.5, we need to scale up to 0.75
+  let newScale = scale;
+
+  if (scale) {
+    if (!isNaN(parseFloat(scale))) {
+      newScale = parseFloat(scale) + 0.6 + "";
+    }
+  }
 
   const parsedRequest: FeaturedImageRequest = {
     fileType: "png",
     imageURL,
     bg,
+    scale: newScale,
+    borderRadius,
   };
 
   return parsedRequest;
