@@ -70,7 +70,7 @@ const featuredImageRequestParser = (
 
   if (scale) {
     if (!isNaN(parseFloat(scale))) {
-      newScale = parseFloat(scale) + 0.6 + "";
+      newScale = parseFloat(scale) + 1.0 + "";
     }
   }
 
