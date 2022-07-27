@@ -180,6 +180,7 @@ function getCss({
       display: flex;
       justify-content: center;
       padding: 48px 96px;
+      overflow: hidden;
     }
 
     .featured-image-scale {
@@ -187,15 +188,14 @@ function getCss({
       height: 100%;
       display: flex;
       justify-content: center;
+      overflow: hidden;
       transform: scale(${scale});
 
     }
 
     .featured-image {
-      width: auto;
-      height: auto;
-      min-width: auto;
-      min-height: auto;
+      max-width: 100%;
+      max-height: 100%;
       margin: auto;
       border-radius: ${borderRadius};
     }
@@ -265,7 +265,7 @@ export function getHtml(parsedReq: ParsedRequest) {
             ${textImageReqHTML}
 
             ${featuredImageReqHTML}
-        </body>
+        </body>     
     </html>`;
 }
 
